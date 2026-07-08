@@ -2,10 +2,22 @@ import streamlit as st
 import google.generativeai as genai
 
 # Configure Gemini API
-# Paste your NEW key here after regenerating the old one.
 # Never leave a real key in a file you upload or share.
-genai.configure(api_key="paste your gemini api key here")
+# Read from Streamlit secrets (see README).
+try:
+    api_key = st.secrets["GEMINI_API_KEY"]
+except KeyError:
+    api_key = None
+
+if not api_key:
+    st.error(
+        "Missing Gemini API key. Configure it in Streamlit secrets as: GEMINI_API_KEY"
+    )
+    st.stop()
+
+genai.configure(api_key=api_key)
 model = genai.GenerativeModel("gemini-2.5-flash")
+
 
 st.set_page_config(page_title="AI Learning Buddy", page_icon="🎓")
 st.markdown("""
