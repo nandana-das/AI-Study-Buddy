@@ -49,7 +49,8 @@ streamlit run app.py
 
 ## Tech stack
 
-Python · Streamlit · Google Gemini (`google-generativeai`)
+Python · Streamlit · Google Gemini (`google-genai`)
+
 
 ## ⚠️ Security note
 

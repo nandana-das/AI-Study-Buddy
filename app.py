@@ -1,23 +1,18 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 
-# Configure Gemini API
-# Never leave a real key in a file you upload or share.
-# Read from Streamlit secrets (see README).
-try:
-    api_key = st.secrets["GEMINI_API_KEY"]
-except KeyError:
-    api_key = None
-
-if not api_key:
-    st.error(
-        "Missing Gemini API key. Configure it in Streamlit secrets as: GEMINI_API_KEY"
-    )
-    st.stop()
-
-genai.configure(api_key=api_key)
-model = genai.GenerativeModel("gemini-2.5-flash")
-
+# ---------------------------------------------------------
+# Configure Gemini API (new unified google-genai SDK)
+#
+# Local run: create .streamlit/secrets.toml with
+#   GEMINI_API_KEY = "your-key-here"
+# Streamlit Community Cloud: add GEMINI_API_KEY under
+#   App settings -> Secrets
+#
+# Never hardcode your real key directly in this file.
+# ---------------------------------------------------------
+client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+MODEL = "gemini-2.5-flash"
 
 st.set_page_config(page_title="AI Learning Buddy", page_icon="🎓")
 st.markdown("""
@@ -27,7 +22,7 @@ st.markdown("""
 
 st.sidebar.header("About")
 st.sidebar.info(
-    "This AI Learning Buddy uses Google's Gemini Pro model to help you understand "
+    "This AI Learning Buddy uses Google's Gemini model to help you understand "
     "various topics. Just enter a topic and choose an activity!"
 )
 
@@ -56,6 +51,13 @@ if st.button("🚀 Generate Content"):
             else:
                 prompt = topic
 
-            response = model.generate_content(prompt)
-            st.success("✨ Here is your content:")
-            st.write(response.text)
+            try:
+                response = client.models.generate_content(
+                    model=MODEL,
+                    contents=prompt,
+                )
+                st.success("✨ Here is your content:")
+                st.write(response.text)
+            except Exception as e:
+                st.error("⚠️ Something went wrong talking to Gemini.")
+                st.exception(e)

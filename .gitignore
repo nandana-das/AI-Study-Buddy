@@ -1,0 +1,26 @@
+.streamlit/secrets.toml
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+dist/
+build/
+*.egg-info/
+
+# Environment variables
+.env
+.env.*
+
+# Streamlit / cache
+.streamlit/
+
+# OS files
+.DS_Store
+Thumbs.db
+
